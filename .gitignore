@@ -123,3 +123,7 @@ app.*.symbols
 # IDE files
 .idea/
 *.iml
+
+# Wrangler & review artifacts
+.wrangler/
+ollama_review.txt
