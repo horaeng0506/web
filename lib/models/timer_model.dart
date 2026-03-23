@@ -8,13 +8,9 @@ class TimerModel extends ChangeNotifier {
     isFrozen = true;
     frozenTarget = userTarget;
 
-    _ticker = Timer.periodic(tickInterval, (_) {
-      now = DateTime.now();
-      notifyListeners();
-    });
+    _ticker = Timer.periodic(tickInterval, (_) => notifyListeners());
   }
 
-  DateTime now = DateTime.now();
   late DateTime userTarget;
   bool isFrozen = false;
   DateTime? frozenTarget;
@@ -22,13 +18,14 @@ class TimerModel extends ChangeNotifier {
 
   Timer? _ticker;
 
+  DateTime get now => DateTime.now();
   DateTime get displayedTarget {
     if (isFrozen) {
       return frozenTarget ?? userTarget;
     }
 
     if (frozenTarget != null && resumeStart != null) {
-      final elapsed = DateTime.now().difference(resumeStart!);
+      final elapsed = now.difference(resumeStart!);
       return frozenTarget!.add(elapsed);
     }
 
@@ -37,7 +34,7 @@ class TimerModel extends ChangeNotifier {
 
   void toggleFreeze() {
     if (isFrozen) {
-      resumeStart = DateTime.now();
+      resumeStart = now;
       isFrozen = false;
     } else {
       frozenTarget = displayedTarget;
@@ -62,7 +59,7 @@ class TimerModel extends ChangeNotifier {
   }
 
   void setUserTarget(DateTime target) {
-    final clamped = target.isBefore(DateTime.now()) ? DateTime.now() : target;
+    final clamped = target.isBefore(now) ? now : target;
     userTarget = clamped;
     if (!isFrozen) {
       frozenTarget = null;

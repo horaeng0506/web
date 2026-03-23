@@ -36,27 +36,22 @@ class TimerDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = context.watch<TimerModel>();
-    final width = MediaQuery.of(context).size.width;
-    final cardWidth = width < 500 ? width - 40 : 420.0;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: cardWidth + 32),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _TargetCard(model: model, maxWidth: cardWidth),
-                const SizedBox(height: 16),
-                _QuickAdjustRow(model: model),
-                const SizedBox(height: 12),
-                _ToggleButton(model: model),
-              ],
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _TargetCard(model: model),
+              const SizedBox(height: 16),
+              _QuickAdjustRow(model: model),
+              const SizedBox(height: 12),
+              _ToggleButton(model: model),
+            ],
           ),
         ),
       ),
@@ -65,10 +60,9 @@ class TimerDashboard extends StatelessWidget {
 }
 
 class _TargetCard extends StatelessWidget {
-  const _TargetCard({required this.model, required this.maxWidth});
+  const _TargetCard({required this.model});
 
   final TimerModel model;
-  final double maxWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +70,6 @@ class _TargetCard extends StatelessWidget {
     final nowFormatter = DateFormat('yyyy.MM.dd HH:mm:ss');
 
     return Container(
-      width: maxWidth,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -141,28 +134,8 @@ class _QuickAdjustRow extends StatelessWidget {
       ),
     ];
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < 480) {
-          return Column(
-            children: [
-              for (final button in buttons) ...[
-                SizedBox(width: double.infinity, child: button),
-                const SizedBox(height: 8),
-              ],
-            ],
-          );
-        }
-
-        return Row(
-          children: [
-            for (final button in buttons) ...[
-              Expanded(child: button),
-              if (button != buttons.last) const SizedBox(width: 10),
-            ],
-          ],
-        );
-      },
+    return Row(
+      children: buttons.map((button) => Expanded(child: button)).toList(),
     );
   }
 }
